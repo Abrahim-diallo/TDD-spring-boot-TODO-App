@@ -18,7 +18,21 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Task createdTask = taskRepository.save(task);
+        validateTask(task);
+        Task createdTask = saveTask(task);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    }
+
+    private void validateTask(Task task) {
+        if (task.getTitle() == null || task.getTitle().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        if (task.getDescription() == null || task.getDescription().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty");
+        }
+    }
+
+    private Task saveTask(Task task) {
+        return taskRepository.save(task);
     }
 }
